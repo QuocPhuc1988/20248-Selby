@@ -124,16 +124,19 @@ export function Board() {
                 )}
 
                 {txHash && (
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="flex items-center gap-2 text-emerald-400 text-xs font-mono bg-emerald-950/30 px-3 py-1 rounded-full border border-emerald-500/30">
-                      <CheckCircle2 className="w-3 h-3" />
-                      <span>Shelby Testnet: {txHash.slice(0, 6)}...{txHash.slice(-4)}</span>
+                  <div className="flex flex-col items-center gap-2 mt-2">
+                    <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono bg-cyan-950/30 px-4 py-2 rounded-lg border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <div className="flex flex-col items-start">
+                        <span className="text-[8px] uppercase tracking-widest text-cyan-500/60 font-black">Shelby Testnet Verified</span>
+                        <span>{txHash.slice(0, 10)}...{txHash.slice(-8)}</span>
+                      </div>
                     </div>
                     <a 
                       href={`https://explorer.shelby.xyz/testnet/txn/${txHash}`} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="text-cyan-400 hover:text-cyan-300 text-[10px] uppercase tracking-widest font-bold flex items-center gap-1 transition-colors"
+                      className="text-cyan-400 hover:text-cyan-300 text-[10px] uppercase tracking-[0.2em] font-black flex items-center gap-2 transition-all hover:gap-3"
                     >
                       View on Shelby Explorer <ExternalLink className="w-3 h-3" />
                     </a>

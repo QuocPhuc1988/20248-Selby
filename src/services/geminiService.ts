@@ -1,7 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 
 export async function generateVictoryImage(score: number) {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error("GEMINI_API_KEY is not defined. Please ensure it's set in the environment.");
+    return null;
+  }
+  const ai = new GoogleGenAI({ apiKey });
   
   const prompt = `A high-quality, cinematic cyberpunk neon victory card for a 2048 game winner. 
   The image should feature a futuristic digital trophy with the number ${score} glowing in cyan neon. 

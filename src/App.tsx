@@ -86,12 +86,20 @@ function AppContent() {
         <Board />
       </motion.div>
 
-      <footer className="mt-12 text-center">
-        <div className="text-[10px] uppercase tracking-[0.3em] text-slate-600 font-bold mb-2">
-          Shelby Protocol Master V5
+      <footer className="mt-12 text-center flex flex-col items-center gap-4">
+        <div className="flex gap-6 text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500">
+          <a href="https://explorer.shelby.xyz/testnet" target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition-colors">Explorer</a>
+          <a href="https://docs.shelby.xyz/apis/faucet/shelbyusd" target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition-colors">Faucet</a>
+          <a href="https://media-kit.shelby.xyz/" target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition-colors">Media Kit</a>
+          <a href="https://docs.shelby.xyz" target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition-colors">Docs</a>
         </div>
-        <div className="text-[10px] text-slate-700 font-mono">
-          VERIFIED ON SHELBYNET • ASSET RECORDED
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.3em] text-slate-600 font-bold mb-2">
+            Shelby Protocol Master V5
+          </div>
+          <div className="text-[10px] text-slate-700 font-mono">
+            VERIFIED ON SHELBYNET • ASSET RECORDED
+          </div>
         </div>
       </footer>
     </div>

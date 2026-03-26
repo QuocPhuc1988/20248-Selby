@@ -16,6 +16,8 @@
     "@aptos-labs/wallet-adapter-ant-design": "^5.3.18",
     "@aptos-labs/wallet-adapter-react": "^8.3.2",
     "@google/genai": "^1.29.0",
+    "@shelby-protocol/react": "^1.0.3",
+    "@shelby-protocol/sdk": "^0.2.4",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "antd": "^5.29.3",
