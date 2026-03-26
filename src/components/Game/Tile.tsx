@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { useWindowSize } from "../../hooks/useWindowSize";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -28,8 +29,9 @@ const TILE_COLORS: Record<number, string> = {
 
 export function Tile({ value, position }: TileProps) {
   const [r, c] = position;
+  const { width } = useWindowSize();
   
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const isMobile = width < 640;
   const tileSize = isMobile ? 64 : 80;
   const gapSize = isMobile ? 8 : 12;
 

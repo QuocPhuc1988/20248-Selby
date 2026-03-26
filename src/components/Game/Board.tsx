@@ -6,6 +6,7 @@ import { generateVictoryImage } from "../../services/geminiService";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Loader2, CheckCircle2, ExternalLink, Image as ImageIcon } from "lucide-react";
 import { useSwipe } from "../../hooks/useSwipe";
+import { useWindowSize } from "../../hooks/useWindowSize";
 
 // The official victory image provided by the user
 const OFFICIAL_VICTORY_IMAGE = "https://storage.googleapis.com/aistudio-build-assets/victory_2048.png";
@@ -39,19 +40,15 @@ export function Board() {
     // 2. Submit Shelby Testnet Transaction (if connected)
     if (connected && account) {
       try {
-        const payload = {
-          type: "entry_function_payload",
-          function: "0x1::aptos_account::transfer",
-          type_arguments: [],
-          arguments: [
-            "0x1", 
-            100, 
-            // Including Wallet ID and Image Reference in the transaction metadata simulation
-            `Wallet: ${account.address.toString()}`,
-            `Image: ${OFFICIAL_VICTORY_IMAGE}`
-          ],
+        // Correct payload structure for Aptos Wallet Adapter v3+ / SDK v1
+        const transaction: any = {
+          data: {
+            function: "0x1::aptos_account::transfer",
+            functionArguments: ["0x1", 100], // Core transfer only takes 2 arguments
+          }
         };
-        const response = await signAndSubmitTransaction(payload as any);
+        
+        const response = await signAndSubmitTransaction(transaction);
         setTxHash(response.hash);
       } catch (error) {
         console.error("Transaction failed:", error);
@@ -85,6 +82,10 @@ export function Board() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [move, gameOver, isProcessing]);
 
+  const { width } = useWindowSize();
+  const isMobile = width < 640;
+  const gridTileSize = isMobile ? "w-16 h-16" : "w-20 h-20";
+
   return (
     <div 
       {...swipeHandlers}
@@ -93,7 +94,7 @@ export function Board() {
       {/* Grid background */}
       <div className="grid grid-cols-4 gap-2 sm:gap-3">
         {Array(16).fill(null).map((_, i) => (
-          <div key={i} className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-800/30 rounded-lg border border-slate-700/30" />
+          <div key={i} className={`${gridTileSize} bg-slate-800/30 rounded-lg border border-slate-700/30`} />
         ))}
       </div>
 
