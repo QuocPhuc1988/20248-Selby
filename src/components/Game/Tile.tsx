@@ -29,6 +29,10 @@ const TILE_COLORS: Record<number, string> = {
 export function Tile({ value, position }: TileProps) {
   const [r, c] = position;
   
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const tileSize = isMobile ? 64 : 80;
+  const gapSize = isMobile ? 8 : 12;
+
   return (
     <motion.div
       layout
@@ -36,12 +40,12 @@ export function Tile({ value, position }: TileProps) {
       animate={{ 
         scale: 1, 
         opacity: 1,
-        x: c * 80 + c * 8, // 80px tile + 8px gap
-        y: r * 80 + r * 8
+        x: c * tileSize + c * gapSize,
+        y: r * tileSize + r * gapSize
       }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className={cn(
-        "absolute w-20 h-20 flex items-center justify-center rounded-lg border-2 font-bold text-2xl",
+        "absolute w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-lg border-2 font-bold text-xl sm:text-2xl",
         TILE_COLORS[value] || "bg-slate-700/20 text-slate-400 border-slate-500/50"
       )}
     >

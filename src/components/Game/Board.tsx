@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from "motion/react";
 import { generateVictoryImage } from "../../services/geminiService";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Loader2, CheckCircle2, ExternalLink, Image as ImageIcon } from "lucide-react";
+import { useSwipe } from "../../hooks/useSwipe";
+
+// The official victory image provided by the user
+const OFFICIAL_VICTORY_IMAGE = "https://storage.googleapis.com/aistudio-build-assets/victory_2048.png";
 
 export function Board() {
   const { 
@@ -12,25 +16,40 @@ export function Board() {
     isProcessing, victoryImage, txHash,
     setProcessing, setVictoryImage, setTxHash 
   } = useGameStore();
-  const { signAndSubmitTransaction, connected } = useWallet();
+  const { signAndSubmitTransaction, connected, account } = useWallet();
+
+  const swipeHandlers = useSwipe((direction) => {
+    if (gameOver || isProcessing) return;
+    move(direction);
+  });
 
   const handleGameOver = useCallback(async () => {
     if (!gameOver || isProcessing || victoryImage) return;
 
     setProcessing(true);
     
-    // 1. Generate AI Victory Image
-    const imageUrl = await generateVictoryImage(score);
-    setVictoryImage(imageUrl);
+    // 1. Use the official victory image or generate one
+    try {
+      const imageUrl = await generateVictoryImage(score);
+      setVictoryImage(imageUrl || OFFICIAL_VICTORY_IMAGE);
+    } catch (error) {
+      setVictoryImage(OFFICIAL_VICTORY_IMAGE);
+    }
 
     // 2. Submit Shelby Testnet Transaction (if connected)
-    if (connected) {
+    if (connected && account) {
       try {
         const payload = {
           type: "entry_function_payload",
           function: "0x1::aptos_account::transfer",
           type_arguments: [],
-          arguments: ["0x1", 100], // Simulating sending data to Shelby Protocol
+          arguments: [
+            "0x1", 
+            100, 
+            // Including Wallet ID and Image Reference in the transaction metadata simulation
+            `Wallet: ${account.address.toString()}`,
+            `Image: ${OFFICIAL_VICTORY_IMAGE}`
+          ],
         };
         const response = await signAndSubmitTransaction(payload as any);
         setTxHash(response.hash);
@@ -40,7 +59,7 @@ export function Board() {
     }
 
     setProcessing(false);
-  }, [gameOver, isProcessing, victoryImage, score, connected, signAndSubmitTransaction, setProcessing, setVictoryImage, setTxHash]);
+  }, [gameOver, isProcessing, victoryImage, score, connected, account, signAndSubmitTransaction, setProcessing, setVictoryImage, setTxHash]);
 
   useEffect(() => {
     if (gameOver) {
@@ -67,11 +86,14 @@ export function Board() {
   }, [move, gameOver, isProcessing]);
 
   return (
-    <div className="relative p-2 bg-slate-900/50 rounded-xl border-2 border-slate-700/50 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+    <div 
+      {...swipeHandlers}
+      className="relative p-2 bg-slate-900/50 rounded-xl border-2 border-slate-700/50 shadow-[0_0_30px_rgba(0,0,0,0.5)] touch-none select-none cursor-grab active:cursor-grabbing"
+    >
       {/* Grid background */}
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-4 gap-2 sm:gap-3">
         {Array(16).fill(null).map((_, i) => (
-          <div key={i} className="w-20 h-20 bg-slate-800/30 rounded-lg border border-slate-700/30" />
+          <div key={i} className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-800/30 rounded-lg border border-slate-700/30" />
         ))}
       </div>
 
